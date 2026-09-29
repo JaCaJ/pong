@@ -40,7 +40,7 @@ function love.load()
 
     player1 = Paddle(10, 30, 5, 20)
     player2 = Paddle(VIRTUAL_WIDTH - 10, VIRTUAL_HEIGHT - 30, 5, 20)
-    ball = Ball(VIRTUAL_WIDTH / 2 * 2, VIRTUAL_HEIGHT / 2 - 2, 4, 4)
+    ball = Ball(VIRTUAL_WIDTH / 2 - 2, VIRTUAL_HEIGHT / 2 - 2, 4, 4)
     gameState = 'start'
 end
 
@@ -75,7 +75,21 @@ function love.update(dt)
         ball.y = VIRTUAL_HEIGHT - 4
         ball.dy = -ball.dy
     end
-end
+end 
+    if ball.x < 0 then
+        servingPlayer = 1
+        player2Score = player2Score + 1
+        ball:reset()
+        gameState = 'start'
+    end
+
+    if ball.x > VIRTUAL_WIDTH then
+        servingPlayer = 2
+        player1Score = player1Score + 1
+        ball:reset()
+        gameState = 'start'
+    end
+
 
     -- movimientos jugador 1
     if love.keyboard.isDown('w') then 
