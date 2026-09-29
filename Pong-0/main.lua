@@ -25,6 +25,7 @@ function love.load()
     love.window.setTitle('Pong')
     
     smallFont = love.graphics.newFont('font.ttf', 8)
+    scoreFont =  love.graphics.newFont('font.ttf', 32)
 
     love.graphics.setFont(smallFont)
 
@@ -34,15 +35,48 @@ function love.load()
         vsync = true
     })
 
+    player1Score = 0
+    player2Score = 0
 
     player1 = Paddle(10, 30, 5, 20)
     player2 = Paddle(VIRTUAL_WIDTH - 10, VIRTUAL_HEIGHT - 30, 5, 20)
     ball = Ball(VIRTUAL_WIDTH / 2 * 2, VIRTUAL_HEIGHT / 2 - 2, 4, 4)
     gameState = 'start'
-
 end
 
 function love.update(dt)
+    if gameState == 'play' then 
+        if ball:collides(player1) then
+            ball.dx = -ball.dx * 1.03
+            ball.x = player1.x + 5
+
+            if ball.dy < 0 then
+                ball.dy = math.random(10, 150)
+            else
+                ball.dy = math.random(10, 150)
+            end
+        end
+        if ball:collides(player2) then
+            ball.dx = -ball.dx * 1.03
+            ball.x = player2.x - 4
+
+        if ball.dy < 0 then
+            ball.dy = math.random(10, 150)
+        else
+            ball.dy = math.random(10, 150)
+        end
+    end
+
+    if ball.y <= 0 then
+        ball.y = 0
+        ball.dy = -ball.dy
+    end
+    if ball.y >= VIRTUAL_HEIGHT - 4 then
+        ball.y = VIRTUAL_HEIGHT - 4
+        ball.dy = -ball.dy
+    end
+end
+
     -- movimientos jugador 1
     if love.keyboard.isDown('w') then 
         player1.dy = -PADDLE_SPEED
@@ -61,10 +95,9 @@ function love.update(dt)
         player2.dy = 0
     end
 
-    if gameState == 'play' then 
-        ball:update(dt)
-    end
-
+if gameState ==  'play' then
+    ball:update(dt)
+end
     player1:update(dt)
     player2:update(dt)
 end
@@ -88,12 +121,9 @@ end
 
 -- funcion para dibujar la pantalla
 function love.draw()
-    scoreFont =  love.graphics.newFont('font.ttf', 32)
-
     push:start()
 
     -- fondo de la pantalla
-    -- LÖVE 11 usa colores de 0 a 1; el ejemplo de CS50 (0.10) usa 0 a 255
     love.graphics.clear(love.math.colorFromBytes(40, 45, 52, 255))
     -- texto en el centro de la pantalla
     if gameState == 'start' then
